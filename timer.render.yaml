@@ -1,0 +1,7 @@
+services:
+  - type: cron
+    name: Toxicity Cronjob
+    schedule: "hourly"
+    runtime: python
+    buildCommand: ""
+    startCommand: "python main.py"
