@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Výsledky analýzy toxicity</title>
+</head>
+<body>
+    <h1>Výsledky toxicity pro:</h1>
+    <p><a href="{{ url }}" target="_blank">{{ url }}</a></p>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Kategorie</th>
+                <th>Průměrná toxicita</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for label, score in scores.items() %}
+            <tr>
+                <td>{{ label }}</td>
+                <td>{{ score }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+    <a href="/">← Zpět</a>
+</body>
+</html>

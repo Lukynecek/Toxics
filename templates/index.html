@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Toxicita článku</title>
+</head>
+<body>
+    <h1>Analýza toxicity článku</h1>
+    <form method="post">
+        <label for="url">Zadej URL článku:</label><br>
+        <input type="text" name="url" size="80">
+        <br><br>
+        <button type="submit">Analyzovat</button>
+    </form>
+
+    {% if error %}
+        <p style="color:red;">Chyba: {{ error }}</p>
+    {% endif %}
+
+    {% if results %}
+        <h2>Výsledky pro: {{ url }}</h2>
+        <ul>
+        {% for label, score in results.items() %}
+            <li><strong>{{ label }}:</strong> {{ score }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
