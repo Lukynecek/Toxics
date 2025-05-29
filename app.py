@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify
 from playwright.sync_api import sync_playwright
 from transformers import pipeline
-import os 
 import numpy as np
+import gunicorn
 import re
 
 app = Flask(__name__)
@@ -104,6 +104,7 @@ def api_analyze():
     return jsonify(output)
 
 if __name__ == "__main__":
+    import os
     port = int(os.environ.get("PORT", 5000))
     print(f"Starting Flask on port {port}")
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)

@@ -3,4 +3,4 @@ transformers
 numpy
 playwright
 torch
-
+gunicorn
