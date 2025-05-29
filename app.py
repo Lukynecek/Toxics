@@ -6,7 +6,7 @@ import gunicorn
 import re
 
 app = Flask(__name__)
-classifier = pipeline("text-classification", model="unitary/toxic-bert", top_k=None)
+classifier = pipeline("text-classification", model="mrm8488/toxic-comment-model")
 
 # Posouvání na konec stránky kvůli JS obsahu
 def scroll_to_bottom(page, pause=1000, max_scrolls=10):

@@ -43,4 +43,4 @@ RUN pip install --upgrade pip \
 EXPOSE 10000
 
 # Spusť server přes gunicorn na portu 10000
-CMD ["gunicorn", "--bind", "0.0.0.0:10000", "app:app"]
+CMD ["python", "app.py"]
