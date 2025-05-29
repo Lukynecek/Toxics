@@ -75,27 +75,31 @@ def api_analyze():
     if not url:
         return jsonify(error="No URL provided"), 400
 
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        page = browser.new_page(user_agent="Mozilla/5.0")
-        try:
+    print("📥 Request received for URL:", url)
+
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page(user_agent="Mozilla/5.0")
             page.goto(url, timeout=60000)
             text = extract_text(page, url)
-        except Exception as e:
             browser.close()
-            return jsonify(error=str(e)), 500
-        browser.close()
+    except Exception as e:
+        print("❌ Error during Playwright:", e)
+        return jsonify(error=str(e)), 500
+
+    print("📝 Extracted text length:", len(text))
 
     chunks = [c.strip()[:500] for c in text.split("\n\n") if len(c.strip()) > 30]
     if not chunks:
-        print("✅ API zavoláno, ale žádný použitelný text (chunks prázdné)")
+        print("⚠️ No usable text chunks found.")
         return jsonify(error="Failed to extract text"), 422
 
-    results = classifier(chunks, batch_size=4)
-
-    if not results:
-        print("✅ API zavoláno, ale výsledky jsou prázdné (results)")
-        return jsonify(message="No toxicity found in the text"), 200
+    try:
+        results = classifier(chunks, batch_size=4)
+    except Exception as e:
+        print("❌ Error during classification:", e)
+        return jsonify(error="Classification failed: " + str(e)), 500
 
     scores = {}
     for analysis in results:
@@ -103,15 +107,13 @@ def api_analyze():
             lbl = item["label"]
             scores.setdefault(lbl, []).append(item["score"])
 
-    if not scores:
-        print("✅ API zavoláno, ale žádné skóre (scores prázdné)")
-        return jsonify(message="No toxicity found in the text"), 200
-
     averaged = {lbl: round(float(np.mean(vals)), 3) for lbl, vals in scores.items()}
     output = {label: {"value": val, "color": get_color(val)} for label, val in averaged.items()}
+    
+    print("✅ Output:", output)
 
-    print("✅ API zavoláno, output:", output)
     return jsonify(output)
+
 
 
 @app.route('/')
