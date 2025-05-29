@@ -103,6 +103,10 @@ def api_analyze():
 
     return jsonify(output)
 
+@app.route('/')
+def health_check():
+    return 'OK', 200
+
 if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))

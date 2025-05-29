@@ -1,6 +1,6 @@
+gunicorn
 flask
 transformers
 numpy
 playwright
 torch
-gunicorn
