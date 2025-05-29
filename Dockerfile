@@ -2,7 +2,7 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Základní věci, co Playwright potřebuje (liby)
+# Nainstaluj závislosti Playwrightu (hlavně ty systémový knihovny)
 RUN apt-get update && apt-get install -y \
     wget \
     libglib2.0-0 \
@@ -32,13 +32,15 @@ RUN apt-get update && apt-get install -y \
     fonts-liberation \
     && rm -rf /var/lib/apt/lists/*
 
-# Zkopírování kódu a závislostí
+# Zkopíruj celý projekt do kontejneru
 COPY . .
 
+# Nainstaluj pythoní závislosti a playwright prohlížeče
 RUN pip install --upgrade pip \
- && pip install -r requirements.txt \
- && playwright install --with-deps
+    && pip install -r requirements.txt \
+    && playwright install --with-deps
 
 EXPOSE 10000
 
+# Spusť server přes gunicorn na portu 10000
 CMD ["gunicorn", "--bind", "0.0.0.0:10000", "app:app"]
