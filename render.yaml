@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: toxicity-detector
+    env: python
+    plan: free
+    buildCommand: ./build.sh
+    startCommand: python app.py
+    runtime: python
+    autoDeploy: true
+    region: oregon

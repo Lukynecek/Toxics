@@ -1,5 +1,5 @@
-Flask
-selenium
+flask
 transformers
-torch
 numpy
+playwright
+
