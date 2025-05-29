@@ -88,9 +88,14 @@ def api_analyze():
 
     chunks = [c.strip()[:500] for c in text.split("\n\n") if len(c.strip()) > 30]
     if not chunks:
+        print("✅ API zavoláno, ale žádný použitelný text (chunks prázdné)")
         return jsonify(error="Failed to extract text"), 422
 
     results = classifier(chunks, batch_size=4)
+
+    if not results:
+        print("✅ API zavoláno, ale výsledky jsou prázdné (results)")
+        return jsonify(message="No toxicity found in the text"), 200
 
     scores = {}
     for analysis in results:
@@ -98,10 +103,16 @@ def api_analyze():
             lbl = item["label"]
             scores.setdefault(lbl, []).append(item["score"])
 
+    if not scores:
+        print("✅ API zavoláno, ale žádné skóre (scores prázdné)")
+        return jsonify(message="No toxicity found in the text"), 200
+
     averaged = {lbl: round(float(np.mean(vals)), 3) for lbl, vals in scores.items()}
     output = {label: {"value": val, "color": get_color(val)} for label, val in averaged.items()}
 
+    print("✅ API zavoláno, output:", output)
     return jsonify(output)
+
 
 @app.route('/')
 def health_check():
